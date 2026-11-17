@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "host-pressure"
-version = "0.1.1"
+version = "0.1.2"
 description = "A command-line resource check that tells you whether your machine has room for another job."
 readme = "README.md"
 requires-python = ">=3.9"

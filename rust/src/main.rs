@@ -7,7 +7,7 @@ mod win;
 use std::collections::HashMap;
 use std::io::Write;
 
-const VERSION: &str = "0.1.0";
+const VERSION: &str = env!("CARGO_PKG_VERSION");
 const EX_USAGE: i32 = 64;
 const EX_TIMEOUT: i32 = 75;
 
