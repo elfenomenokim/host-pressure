@@ -1,42 +1,53 @@
-# AGENTS.md — host-pressure
+# AGENTS.md
 
-Instructions for an AI agent that needs to know whether this machine has room.
+## Layout
 
-## When to use it
+- `src/host_pressure/_core.py`: Python OS readers and CPU baseline storage.
+- `src/host_pressure/cli.py`: command parsing, output, check, wait, watch.
+- `src/host_pressure/verdict.py`: thresholds and verdict rules.
+- `src/host_pressure/formatting.py`: text and template rendering.
+- `rust/src/`: native CLI and readers; `win.rs` owns Windows calls.
+- `rust/parity.sh`: comparison with the Python reference.
+- `docs/demo/`: synthetic-input recording, tapes, and media.
+- `docs/bench/`: saved measurements and benchmark runners.
+- `public.json`: public export allowlist and repository metadata.
 
-Use it before a heavy local job and before blaming the machine for slowness: a parallel build, a model run, a batch, a benchmark, a test suite that timed out.
+## Commands
 
-Do not use it as a monitoring service. It prints one reading; it does not watch, alert, or keep history. Do not use it to decide that a machine is healthy over time — one `ok` after a spike proves nothing.
+Run from the repository root:
 
-## Install
-
-```console
-$ pipx install host-pressure
+```sh
+cargo build --release --locked --manifest-path rust/Cargo.toml
+PYTHONPATH=src python3 -m host_pressure --help
+bash rust/parity.sh
+python3 -m compileall -q src
 ```
 
-`uvx host-pressure …` runs it without installing. Python 3.9+, no dependency.
+The parity script compares field shapes for changing readings, then exit codes,
+formatting and error paths. It is not a proof of every platform's sensors.
+No separate linter is configured. Keep the existing formatting in each file.
 
-Two editions share one name: the Rust binary (the `host-pressure` command from `pipx install host-pressure`; 8x faster startup on M5, 35x on A1) and the pure-Python package (`import host_pressure`, same readings and exit codes, shared CPU-baseline state). Prefer the binary on the command line; keep the import for in-process reads.
+## Changes
 
-## Use
+- Keep Python and Rust flags, JSON fields, exit codes and threshold rules aligned.
+- Keep the CPU baseline path and JSON format compatible between editions.
+- Use a consumer ID for each independent caller; do not share its sampling interval.
+- A missing CPU reading stays null, never zero. Preserve the distinction between
+  baseline and explicit-sample readings.
+- The default CLI may sample when its baseline has no usable counter delta.
+  `--no-sample` must not wait. `--watch` repeats until interrupted.
+- Keep unknown configuration keys and template fields as errors.
+- Keep unavailable thermal, battery and pressure readings explicit.
+- Preserve platform limits in both READMEs. A wheel build is not a live sensor test.
+- Benchmarks must name the command: the default sampling path and `--no-sample`
+  measure different behavior. Preserve raw runs when updating the table.
 
-| Question | Command | Read |
-|---|---|---|
-| Is this machine busy right now? | `host-pressure` | one line: CPU, memory, swap, memory pressure |
-| Should I start a heavy job now? | `host-pressure check` | exit 0 = ok, 1 = busy, 2 = overloaded |
-| Wait until it has room | `host-pressure wait --until ok --timeout 120` | exit 0 = reached, 75 = timed out |
-| What exactly is high? | `host-pressure check --json` | `level` and the `reasons` that produced it |
-| Every reading at once | `host-pressure --json` | full object, including `disks`, `thermal`, `battery`, `psi` |
-| One field for a status line | `host-pressure --format '{level} {cpu}'` | only that field |
+## Demo and release
 
-- Run `host-pressure check` before spawning parallel work, not `uptime` or `top`: it already combines CPU, memory, load per core, disk and the kernel's own pressure signal.
-- When `wait` exits 75, the machine stayed above the wanted level for the whole timeout. Report that, and start the work anyway only if the caller asked you to.
-- When `cpuPercent` is `null`, the baseline is cold (first call for this consumer) or `--no-sample` was used. Run again, or pass `--sample 0.5` once. Do not report a null CPU as 0%.
-- `--json` is the only format to parse. The one-line output is for humans and its field order may grow.
-
-## Do not
-
-- Do not redirect the one-line output into a parser; use `--json`.
-- Do not pass `--sample` on a status line or in a loop; that sleeps. The baseline is the cheap path.
-- Do not treat `pressure unknown` or a missing `thermal`/`battery` as a failure; the platform simply does not publish it.
-- Do not claim Windows Rust works from the code. It is untested.
+- `docs/demo/fixture.py` replaces only the Python reader for recording. Never
+  install it as the real command or describe its numbers as host measurements.
+- Record with a dedicated headless shell via `docs/demo/record.sh`; never let
+  VHS launch the user's normal browser. Keep names and home paths out of frames.
+- Keep README.md, README.ko.md, pyproject description and public.json aligned.
+- Export new assets explicitly in public.json. Do not bump a version or publish
+  packages without the maintainer's release instruction.

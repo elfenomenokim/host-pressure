@@ -1,0 +1,10 @@
+{
+  "python": {
+    "peak_working_set_bytes": 4587520,
+    "output": "CPU 5% MEM 57% SWAP 149.1M pressure normal"
+  },
+  "rust": {
+    "peak_working_set_bytes": 5095424,
+    "output": "CPU 15% MEM 57% SWAP 149.1M pressure normal"
+  }
+}

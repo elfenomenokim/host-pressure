@@ -193,10 +193,17 @@ fn tick_limit() -> u64 {
     }
 }
 
+// Keep one host send right for resident library callers as well as the CLI.
+#[cfg(target_os = "macos")]
+fn darwin_host_port() -> libc::mach_port_t {
+    static HOST: std::sync::OnceLock<libc::mach_port_t> = std::sync::OnceLock::new();
+    *HOST.get_or_init(|| unsafe { libc::mach_host_self() })
+}
+
 #[cfg(target_os = "macos")]
 fn darwin_cpu_ticks() -> Option<Vec<u64>> {
     unsafe {
-        let host = libc::mach_host_self();
+        let host = darwin_host_port();
         if host == 0 {
             return None;
         }
@@ -474,7 +481,7 @@ fn darwin_memory() -> (Option<f64>, Option<i64>, Option<i64>) {
         if total == 0 {
             return (None, None, None);
         }
-        let host = libc::mach_host_self();
+        let host = darwin_host_port();
         if host == 0 {
             return (None, Some(total as i64), None);
         }
@@ -1391,6 +1398,22 @@ pub fn read_host_resources(
     mounts: Option<Vec<String>>,
     sample: Option<f64>,
 ) -> Reading {
+    read_resources(consumer_id, state_dir_arg, mounts, sample, true)
+}
+
+/// Status collectors do not need thermal/battery objects or their platform frameworks.
+/// The existing CLI keeps the full reading above, with identical output.
+pub fn read_host_metrics(consumer_id: &str, state_dir_arg: Option<&str>) -> Reading {
+    read_resources(consumer_id, state_dir_arg, None, None, false)
+}
+
+fn read_resources(
+    consumer_id: &str,
+    state_dir_arg: Option<&str>,
+    mounts: Option<Vec<String>>,
+    sample: Option<f64>,
+    extras: bool,
+) -> Reading {
     let now_str = iso_now();
     let os_s = current_os();
     let host = hostname();
@@ -1419,8 +1442,10 @@ pub fn read_host_resources(
         let (sb, st) = darwin_swap();
         swap_bytes = sb;
         swap_total = st;
-        thermal = darwin_thermal();
-        battery = darwin_battery();
+        if extras {
+            thermal = darwin_thermal();
+            battery = darwin_battery();
+        }
     }
     #[cfg(target_os = "linux")]
     {
@@ -1434,9 +1459,11 @@ pub fn read_host_resources(
         let (pr, prs) = linux_pressure(&mem);
         pressure = pr;
         pressure_source = prs;
-        psi = linux_psi();
-        thermal = linux_thermal();
-        battery = linux_battery();
+        if extras {
+            psi = linux_psi();
+            thermal = linux_thermal();
+            battery = linux_battery();
+        }
     }
     #[cfg(target_os = "windows")]
     {

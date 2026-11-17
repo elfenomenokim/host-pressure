@@ -4,8 +4,8 @@ build-backend = "maturin"
 
 [project]
 name = "host-pressure"
-version = "0.1.0"
-description = "Read CPU, memory, swap, disk, thermal, battery and pressure stall time on macOS, Linux and Windows, and turn them into one verdict: ok, busy or overloaded. No subprocess, no dependency."
+version = "0.1.1"
+description = "A command-line resource check that tells you whether your machine has room for another job."
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"

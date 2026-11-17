@@ -1,6 +1,6 @@
 [package]
 name = "host-pressure"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Read CPU, memory, swap, disk, thermal, battery and pressure stall time on macOS, Linux and Windows, and turn them into one verdict: ok, busy or overloaded. No subprocess."
 license = "MIT"

@@ -1,0 +1,1 @@
+CPU n/a MEM 79% SWAP 1.4G pressure normal
