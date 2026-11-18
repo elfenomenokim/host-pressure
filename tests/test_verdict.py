@@ -1,7 +1,12 @@
 """Regression tests for threshold-driven verdicts (stdlib unittest only)."""
+import json
+import os
+import tempfile
 import unittest
+from pathlib import Path
+from unittest import mock
 
-from host_pressure.verdict import Thresholds, verdict
+from host_pressure.verdict import Thresholds, load_thresholds, verdict
 
 
 def linux_psi_readings():
@@ -31,6 +36,40 @@ class LinuxPsiThresholds(unittest.TestCase):
         result = verdict(readings, rules)
         self.assertEqual("overloaded", result["level"])
         self.assertEqual(["memory pressure critical"], result["reasons"])
+
+
+class ThresholdInputValidation(unittest.TestCase):
+    """Only swap limits may be off; every other merged value stays a number."""
+
+    def _config(self, data):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        path = Path(directory.name) / "config.json"
+        path.write_text(json.dumps(data))
+        return path
+
+    def test_env_off_is_refused_for_a_non_swap_threshold(self):
+        with mock.patch.dict(os.environ, {"HOST_PRESSURE_MEMORY_BUSY": "off"}):
+            with self.assertRaises(ValueError) as caught:
+                load_thresholds(self._config({}))
+        self.assertIn("only swap_busy_gb and swap_overloaded_gb", str(caught.exception))
+
+    def test_config_null_is_refused_for_a_non_swap_threshold(self):
+        with self.assertRaises(ValueError) as caught:
+            load_thresholds(self._config({"memory_busy": None}))
+        self.assertIn("only swap_busy_gb and swap_overloaded_gb", str(caught.exception))
+
+    def test_config_string_is_refused(self):
+        with self.assertRaises(ValueError) as caught:
+            load_thresholds(self._config({"memory_busy": "80"}))
+        self.assertIn("expected a number or null", str(caught.exception))
+
+    def test_swap_null_and_numeric_thresholds_are_accepted(self):
+        rules = load_thresholds(self._config({"swap_busy_gb": None, "memory_busy": 70}))
+        self.assertIsNone(rules.swap_busy_gb)
+        self.assertEqual(rules.memory_busy, 70.0)
+        self.assertEqual(verdict({"memoryPercent": 69.0}, rules)["level"], "ok")
+        self.assertEqual(verdict({"memoryPercent": 71.0}, rules)["level"], "busy")
 
 
 if __name__ == "__main__":

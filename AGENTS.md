@@ -36,7 +36,12 @@ No separate linter is configured. Keep the existing formatting in each file.
   baseline and explicit-sample readings.
 - The default CLI may sample when its baseline has no usable counter delta.
   `--no-sample` must not wait. `--watch` repeats until interrupted.
-- Keep unknown configuration keys and template fields as errors.
+- Keep unknown configuration keys and template fields as errors. Only the two
+  swap limits may be `off`/`none`/`null`; every other threshold is a number.
+- Resolve the home directory as Python's `Path.home()` does (`USERPROFILE` on
+  Windows) and treat an empty path environment variable as unset.
+- Validate `--sample` in every mode: a negative or non-finite window is a usage
+  error, never `CPU n/a` with exit 0.
 - Keep unavailable thermal, battery and pressure readings explicit.
 - Preserve platform limits in both READMEs. A wheel build is not a live sensor test.
 - Benchmarks must name the command: the default sampling path and `--no-sample`
@@ -59,7 +64,9 @@ A change is a real defect when it:
 - leaves Python and Rust apart on a flag, JSON field, exit code or threshold rule.
 - turns an unavailable CPU, thermal, battery or pressure reading into zero or a guess.
 - makes `--no-sample` wait, or lets `--watch` stop repeating.
-- ignores an unknown configuration key or template field instead of failing.
+- ignores an unknown configuration key or template field instead of failing, or lets a non-swap threshold be off/null.
+- resolves the home directory or a path environment variable differently from Python.
+- accepts a negative or non-finite `--sample` in default or `--watch` mode.
 - breaks reading a baseline file written by the previous version, or changes its JSON format.
 - shares one sampling interval across consumers that asked for independent IDs.
 - claims platform support from a wheel build or from a demo fixture instead of a live sensor read.

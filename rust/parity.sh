@@ -123,6 +123,39 @@ else
 rs: $rs_err"
 fi
 
+# 7. threshold and sample validation: same exit 64 and the same message.
+tmp_cfg=$(mktemp)
+echo '{"memory_busy": null}' > "$tmp_cfg"
+py_err=$(PYTHONPATH="$ROOT/src" python3 -m host_pressure --config "$tmp_cfg" --sample 0.1 2>&1; echo "exit:$?")
+rs_err=$("$RS_BIN" --config "$tmp_cfg" --sample 0.1 2>&1; echo "exit:$?")
+rm -f "$tmp_cfg"
+if [ "$py_err" = "$rs_err" ] && [ "$(echo "$py_err" | tail -n 1)" = "exit:64" ]; then
+  ok "null threshold error"
+else
+  bad "null threshold error" "py: $py_err
+rs: $rs_err"
+fi
+
+py_err=$(HOST_PRESSURE_MEMORY_BUSY=off PYTHONPATH="$ROOT/src" python3 -m host_pressure --sample 0.1 2>&1; echo "exit:$?")
+rs_err=$(HOST_PRESSURE_MEMORY_BUSY=off "$RS_BIN" --sample 0.1 2>&1; echo "exit:$?")
+if [ "$py_err" = "$rs_err" ] && [ "$(echo "$py_err" | tail -n 1)" = "exit:64" ]; then
+  ok "off on a non-swap threshold"
+else
+  bad "off on a non-swap threshold" "py: $py_err
+rs: $rs_err"
+fi
+
+for bad_sample in -1 nan; do
+  py_err=$(PYTHONPATH="$ROOT/src" python3 -m host_pressure --sample "$bad_sample" 2>&1; echo "exit:$?")
+  rs_err=$("$RS_BIN" --sample "$bad_sample" 2>&1; echo "exit:$?")
+  if [ "$py_err" = "$rs_err" ] && [ "$(echo "$py_err" | tail -n 1)" = "exit:64" ]; then
+    ok "bad sample $bad_sample"
+  else
+    bad "bad sample $bad_sample" "py: $py_err
+rs: $rs_err"
+  fi
+done
+
 echo "---"
 echo "pass=$pass fail=$fail"
 [ "$fail" -eq 0 ]

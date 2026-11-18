@@ -155,7 +155,7 @@ A1에서 판본별 기준값 폴더를 나눠 다시 확인했습니다. Rust를
 | `--disk-busy`, `--disk-overloaded` | 90 / 97% |
 | `--swap-busy-gb`, `--swap-overloaded-gb` | 사용 안 함 |
 
-파일은 `--config FILE`, `HOST_PRESSURE_CONFIG`, `$XDG_CONFIG_HOME/host-pressure/config.json` 순으로 선택합니다. 파일 키는 `memory_busy`처럼 쓰고, 환경 변수는 `HOST_PRESSURE_MEMORY_BUSY=80`처럼 씁니다. 값의 우선순위는 명령줄 → 환경 변수 → 파일입니다. 없는 키는 오류로 처리합니다.
+파일은 `--config FILE`, `HOST_PRESSURE_CONFIG`, `$XDG_CONFIG_HOME/host-pressure/config.json` 순으로 선택합니다. 파일 키는 `memory_busy`처럼 쓰고, 환경 변수는 `HOST_PRESSURE_MEMORY_BUSY=80`처럼 씁니다. `off`, `none`, `null`은 `swap_busy_gb`와 `swap_overloaded_gb`에만 허용되며 나머지 임계값은 숫자여야 합니다. 잘못된 값은 사용법 오류입니다. 값의 우선순위는 명령줄 → 환경 변수 → 파일입니다. 없는 키는 오류로 처리합니다.
 
 PSI는 파일과 환경 변수에서 `psi_cpu_busy`, `psi_cpu_overloaded`, `psi_memory_busy`, `psi_memory_overloaded`, `psi_io_busy`, `psi_io_overloaded`를 설정할 수 있습니다. macOS 커널 압력과 발열 상태의 판정 규칙은 고정입니다. Linux의 PSI는 `psi_*` 임계값으로만 판정하므로, 값을 올리면 판정이 완화됩니다.
 

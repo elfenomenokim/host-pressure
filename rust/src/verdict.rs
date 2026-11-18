@@ -67,13 +67,11 @@ impl Default for Thresholds {
 }
 
 pub fn config_path() -> PathBuf {
-    if let Some(p) = env::var_os("HOST_PRESSURE_CONFIG") {
-        return PathBuf::from(p);
+    if let Some(p) = crate::core::env_path("HOST_PRESSURE_CONFIG") {
+        return p;
     }
-    let base = env::var_os("XDG_CONFIG_HOME").map(PathBuf::from).unwrap_or_else(|| {
-        let home = env::var_os("HOME").map(PathBuf::from).unwrap_or_else(|| PathBuf::from("."));
-        home.join(".config")
-    });
+    let base = crate::core::env_path("XDG_CONFIG_HOME")
+        .unwrap_or_else(|| crate::core::home_dir().join(".config"));
     base.join("host-pressure").join("config.json")
 }
 
@@ -223,6 +221,17 @@ pub fn read_config(path: Option<&str>) -> Result<HashMap<String, Option<f64>>, S
             NUMERIC_KEYS.join(", ")
         ));
     }
+    // A null threshold is meaningful only for the swap limits; elsewhere it
+    // used to be silently ignored while Python crashed on the comparison.
+    for (key, value) in &map {
+        if value.is_none() && !key.starts_with("swap_") {
+            return Err(format!(
+                "{}: {}: only swap_busy_gb and swap_overloaded_gb accept off, none or null",
+                target.display(),
+                key
+            ));
+        }
+    }
     // Detect non-object JSON (e.g. array): our tiny parser already errors as expected-object.
     // Also detect trailing garbage after object.
     Ok(map)
@@ -246,6 +255,12 @@ pub fn load_thresholds(
             }
             let low = raw.to_lowercase();
             if low == "none" || low == "off" || low == "null" {
+                if !key.starts_with("swap_") {
+                    return Err(format!(
+                        "{}: only swap_busy_gb and swap_overloaded_gb accept off, none or null",
+                        env_name
+                    ));
+                }
                 values.insert(key.to_string(), None);
                 continue;
             }
@@ -578,5 +593,32 @@ mod tests {
         let v = verdict_reading(&r, &relaxed());
         assert_eq!(v.level, "overloaded");
         assert_eq!(v.reasons, vec!["memory pressure critical".to_string()]);
+    }
+
+    fn write_config(body: &str) -> std::path::PathBuf {
+        let path = std::env::temp_dir().join(format!(
+            "hp-config-test-{}-{}.json",
+            std::process::id(),
+            body.len()
+        ));
+        std::fs::write(&path, body).unwrap();
+        path
+    }
+
+    #[test]
+    fn null_threshold_is_only_for_swap() {
+        let path = write_config("{\"memory_busy\": null}");
+        let err = read_config(path.to_str()).unwrap_err();
+        std::fs::remove_file(&path).ok();
+        assert!(err.contains("only swap_busy_gb and swap_overloaded_gb"), "{err}");
+    }
+
+    #[test]
+    fn null_swap_threshold_and_numbers_are_accepted() {
+        let path = write_config("{\"swap_busy_gb\": null, \"memory_busy\": 70}");
+        let map = read_config(path.to_str()).unwrap();
+        std::fs::remove_file(&path).ok();
+        assert_eq!(map.get("swap_busy_gb"), Some(&None));
+        assert_eq!(map.get("memory_busy"), Some(&Some(70.0)));
     }
 }

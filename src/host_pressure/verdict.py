@@ -81,6 +81,13 @@ def read_config(path: Optional[Any] = None) -> Dict[str, Any]:
     if unknown:
         raise ValueError("%s: unknown key(s) %s; valid keys: %s"
                          % (target, ", ".join(sorted(unknown)), ", ".join(NUMERIC_KEYS)))
+    for key, value in data.items():
+        if value is None:
+            if not key.startswith("swap_"):
+                raise ValueError("%s: %s: only swap_busy_gb and swap_overloaded_gb accept "
+                                 "off, none or null" % (target, key))
+        elif isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError("%s: %s: expected a number or null, got %r" % (target, key, value))
     return data
 
 
@@ -93,6 +100,9 @@ def load_thresholds(path: Optional[Any] = None, overrides: Optional[Dict[str, An
         if raw is None or raw == "":
             continue
         if raw.lower() in ("none", "off", "null"):
+            if not key.startswith("swap_"):
+                raise ValueError("%s%s: only swap_busy_gb and swap_overloaded_gb accept "
+                                 "off, none or null" % (ENV_PREFIX, key.upper()))
             values[key] = None
             continue
         try:
@@ -105,7 +115,21 @@ def load_thresholds(path: Optional[Any] = None, overrides: Optional[Dict[str, An
     if not values:
         return Thresholds()
     valid = {field.name for field in fields(Thresholds)}
-    return replace(Thresholds(), **{key: value for key, value in values.items() if key in valid})
+    merged: Dict[str, Any] = {}
+    for key, value in values.items():
+        if key not in valid:
+            continue
+        if value is None:
+            # only the swap limits may be off; _above() cannot compare None
+            if not key.startswith("swap_"):
+                raise ValueError("%s: only swap_busy_gb and swap_overloaded_gb accept "
+                                 "off, none or null" % key)
+            merged[key] = None
+        elif isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError("%s: expected a number, got %r" % (key, value))
+        else:
+            merged[key] = float(value)
+    return replace(Thresholds(), **merged)
 
 
 def _above(value: Optional[float], busy: float, overloaded: float, label: str,

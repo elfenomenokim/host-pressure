@@ -159,7 +159,7 @@ On A1, a follow-up run with separate baseline directories explained the reversal
 | `--disk-busy`, `--disk-overloaded` | 90 / 97 percent |
 | `--swap-busy-gb`, `--swap-overloaded-gb` | Disabled |
 
-Use `--config FILE`, `HOST_PRESSURE_CONFIG`, or `$XDG_CONFIG_HOME/host-pressure/config.json` for persistent thresholds. Keys use snake case, such as `memory_busy`; unknown keys are errors. Environment overrides use `HOST_PRESSURE_MEMORY_BUSY=80`. Command-line values win over environment values, which win over the file.
+Use `--config FILE`, `HOST_PRESSURE_CONFIG`, or `$XDG_CONFIG_HOME/host-pressure/config.json` for persistent thresholds. Keys use snake case, such as `memory_busy`; unknown keys are errors. Environment overrides use `HOST_PRESSURE_MEMORY_BUSY=80`. Only `swap_busy_gb` and `swap_overloaded_gb` accept `off`, `none` or `null`; every other threshold must be a number, and a bad value is a usage error. Command-line values win over environment values, which win over the file.
 
 Config and environment also accept `psi_cpu_busy`, `psi_cpu_overloaded`, `psi_memory_busy`, `psi_memory_overloaded`, `psi_io_busy`, and `psi_io_overloaded`. macOS kernel pressure and thermal states have fixed verdict mappings. On Linux, PSI is classified by the `psi_*` thresholds only, so raising them relaxes the verdict.
 

@@ -315,6 +315,18 @@ struct Sampling {
     no_sample: bool,
 }
 
+/// Reject a sample window that no read can use; Python raises the same message
+/// from sample_cpu_percent, so both editions exit 64 instead of printing n/a.
+fn sample_rejected(sampling: &Sampling) -> bool {
+    match sampling.sample {
+        Some(s) if !s.is_finite() || s < 0.0 => {
+            eprintln!("host-pressure: sample seconds must be finite and nonnegative");
+            true
+        }
+        _ => false,
+    }
+}
+
 type Overrides = HashMap<String, Option<f64>>;
 
 fn parse_float_flag(name: &str, val: Option<&str>, prog: &str, usage: &str) -> Result<f64, i32> {
@@ -751,6 +763,9 @@ fn cmd_default(args: &[String]) -> i32 {
             return EX_USAGE;
         }
     };
+    if sample_rejected(&sampling) {
+        return EX_USAGE;
+    }
 
     if let Some(w) = watch {
         let interval = w.max(0.2);
@@ -829,12 +844,8 @@ fn cmd_check(args: &[String]) -> i32 {
             return EX_USAGE;
         }
     };
-    // validate sample value? Python allows any float; negative sample would fail in sample_cpu_percent? Actually _core.sample_cpu_percent raises ValueError for negative/non-finite -> caught as EX_USAGE.
-    if let Some(s) = sampling.sample {
-        if !s.is_finite() || s < 0.0 {
-            eprintln!("host-pressure: sample seconds must be finite and nonnegative");
-            return EX_USAGE;
-        }
+    if sample_rejected(&sampling) {
+        return EX_USAGE;
     }
     let ra = ReadArgs { common: &common, sampling: &sampling };
     let readings = do_read(&ra);
@@ -1104,6 +1115,21 @@ mod tests {
             compact_json(pretty),
             "{\"a\": 1, \"b\": [2, 3], \"text\": \"x  y: z\"}"
         );
+    }
+
+    #[test]
+    fn negative_and_nonfinite_sample_is_rejected() {
+        for value in [-1.0, f64::NAN, f64::INFINITY] {
+            assert!(sample_rejected(&Sampling {
+                sample: Some(value),
+                no_sample: false,
+            }));
+        }
+        assert!(!sample_rejected(&Sampling {
+            sample: Some(0.0),
+            no_sample: false,
+        }));
+        assert!(!sample_rejected(&Sampling::default()));
     }
 
     #[test]

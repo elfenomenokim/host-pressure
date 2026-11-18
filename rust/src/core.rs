@@ -1059,17 +1059,35 @@ fn loadaverage() -> Option<Vec<f64>> {
 // ---------------------------------------------------------------------------
 // CPU persisted baseline + sample
 // ---------------------------------------------------------------------------
+/// An environment path; an empty value counts as unset, as in Python.
+pub fn env_path(key: &str) -> Option<PathBuf> {
+    std::env::var_os(key)
+        .filter(|value| !value.is_empty())
+        .map(PathBuf::from)
+}
+
+/// The user's home directory as Python's `Path.home()` resolves it
+/// (`USERPROFILE` on Windows, `HOME` elsewhere).
+pub fn home_dir() -> PathBuf {
+    if cfg!(target_os = "windows") {
+        if let Some(profile) = env_path("USERPROFILE") {
+            return profile;
+        }
+        if let Some(path) = env_path("HOMEPATH") {
+            return env_path("HOMEDRIVE").unwrap_or_default().join(path);
+        }
+    }
+    env_path("HOME").unwrap_or_else(|| PathBuf::from("."))
+}
+
 fn state_dir(arg: Option<&str>) -> PathBuf {
     if let Some(d) = arg {
         return PathBuf::from(d);
     }
-    if let Some(v) = std::env::var_os("HOST_PRESSURE_STATE_DIR") {
-        return PathBuf::from(v);
+    if let Some(v) = env_path("HOST_PRESSURE_STATE_DIR") {
+        return v;
     }
-    let base = std::env::var_os("XDG_STATE_HOME").map(PathBuf::from).unwrap_or_else(|| {
-        let home = std::env::var_os("HOME").map(PathBuf::from).unwrap_or_else(|| PathBuf::from("."));
-        home.join(".local/state")
-    });
+    let base = env_path("XDG_STATE_HOME").unwrap_or_else(|| home_dir().join(".local/state"));
     base.join("host-pressure")
 }
 
@@ -1525,5 +1543,26 @@ fn read_resources(
         battery,
         psi,
         disks: disks(mounts),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{env_path, home_dir};
+
+    #[test]
+    fn empty_environment_path_counts_as_unset() {
+        std::env::set_var("HOST_PRESSURE_TEST_EMPTY_PATH", "");
+        assert!(env_path("HOST_PRESSURE_TEST_EMPTY_PATH").is_none());
+        std::env::remove_var("HOST_PRESSURE_TEST_EMPTY_PATH");
+    }
+
+    #[test]
+    fn home_dir_uses_home_on_non_windows() {
+        if !cfg!(target_os = "windows") {
+            if let Some(home) = env_path("HOME") {
+                assert_eq!(home_dir(), home);
+            }
+        }
     }
 }

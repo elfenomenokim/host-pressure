@@ -3,6 +3,18 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses `MAJOR.MINOR.PATCH`.
 
+## [0.1.4] - 2026-11-18
+
+### Fixed
+
+- Rust finds the home directory as Python does (`USERPROFILE` on Windows, `HOME` elsewhere) and
+  treats an empty `XDG_*` or `HOST_PRESSURE_*` path as unset, so both editions share the config
+  file and CPU baselines on Windows.
+- `off`, `none` and `null` disable only `swap_busy_gb` and `swap_overloaded_gb`. Any other threshold
+  set to null or to a non-number is a usage error instead of a `TypeError` at verdict time.
+- The default and `--watch` modes validate `--sample`; a negative, `nan` or `inf` window exits 64
+  with the same message as Python instead of printing `CPU n/a` with exit 0.
+
 ## [0.1.3] - 2026-11-18
 
 ### Fixed
