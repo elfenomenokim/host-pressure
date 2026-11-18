@@ -1,0 +1,25 @@
+{
+  "name": "host-pressure",
+  "sentence": "A command-line resource check that tells you whether your machine has room for another job.",
+  "tag": "PYTHON · RUST",
+  "terminal": [
+    "$ host-pressure --no-sample",
+    "CPU 16% MEM 72% SWAP 1.5G",
+    "pressure normal",
+    "ok"
+  ],
+  "metric": {
+    "kind": "hyperfine",
+    "source": "docs/bench/m5-no-sample.json",
+    "field": "time_wall_clock",
+    "scale": 1000,
+    "title": "No-sample mean wall time",
+    "basis": "M5 · 15 runs",
+    "unit": "ms",
+    "precision": 1,
+    "items": [
+      {"label": "Python", "match": "python3 -m host_pressure --no-sample"},
+      {"label": "Rust", "match": "./rust/target/release/host-pressure --no-sample"}
+    ]
+  }
+}

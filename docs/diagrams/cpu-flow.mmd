@@ -1,0 +1,6 @@
+flowchart LR
+    A["CPU baseline"] --> B{"New ticks?"}
+    B -->|Yes| C["Use the delta"]
+    B -->|No| D{"--no-sample?"}
+    D -->|Yes| E["Return n/a"]
+    D -->|No| F["Sample 0.3 s<br/>May wait 1 s more"]
