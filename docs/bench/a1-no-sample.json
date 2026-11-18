@@ -1,0 +1,92 @@
+{
+  "date": "2026-11-17",
+  "host": "A1",
+  "os": "Linux-7.0.0-1013-oracle-aarch64-with-glibc2.39",
+  "method": "perf_counter subprocess.run, --no-sample, warmup 3, runs 30; separate /usr/bin/time -v for peak RSS",
+  "runs": {
+    "python": {
+      "command": [
+        "/tmp/hp-venv/bin/python",
+        "-m",
+        "host_pressure",
+        "--no-sample"
+      ],
+      "milliseconds": [
+        77.78489775955677,
+        70.66014315932989,
+        69.4870250299573,
+        69.79270419105887,
+        71.41354400664568,
+        70.03834377974272,
+        67.9501062259078,
+        68.26818501576781,
+        66.98386697098613,
+        68.05406510829926,
+        70.66590385511518,
+        69.77898487821221,
+        67.65750609338284,
+        69.41122421994805,
+        69.30342502892017,
+        70.13326371088624,
+        71.10302289947867,
+        72.70654290914536,
+        71.1766229942441,
+        69.673344027251,
+        69.26170503720641,
+        71.36390311643481,
+        71.18958281353116,
+        69.89062484353781,
+        68.8091847114265,
+        70.01030398532748,
+        69.32874489575624,
+        70.15086431056261,
+        69.27130511030555,
+        69.9993041343987
+      ],
+      "mean_ms": 70.04394149407744,
+      "time_stdout": "CPU 53% MEM 13% SWAP 0B pressure normal\n",
+      "time_stderr": "\tCommand being timed: \"/tmp/hp-venv/bin/python -m host_pressure --no-sample\"\n\tUser time (seconds): 0.06\n\tSystem time (seconds): 0.01\n\tPercent of CPU this job got: 98%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0:00.07\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 15712\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 2405\n\tVoluntary context switches: 1\n\tInvoluntary context switches: 6\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 8\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n"
+    },
+    "rust": {
+      "command": [
+        "/home/user/.local/bin/host-pressure",
+        "--no-sample"
+      ],
+      "milliseconds": [
+        1.7454391345381737,
+        1.9783182069659233,
+        1.8637189641594887,
+        1.939557958394289,
+        2.0011980086565018,
+        1.972998958081007,
+        1.784197986125946,
+        1.9233589991927147,
+        1.9518779590725899,
+        1.5720389783382416,
+        1.479318831115961,
+        1.378319226205349,
+        1.3887188397347927,
+        1.4122789725661278,
+        1.3613980263471603,
+        1.4827987179160118,
+        1.5207990072667599,
+        1.467239111661911,
+        1.4535593800246716,
+        2.29251803830266,
+        1.4944388531148434,
+        1.4547989703714848,
+        1.416678074747324,
+        1.499359030276537,
+        1.5839990228414536,
+        1.6413591802120209,
+        1.51783786714077,
+        1.3778391294181347,
+        1.854998990893364,
+        1.6424390487372875
+      ],
+      "mean_ms": 1.6484467157473166,
+      "time_stdout": "CPU 100% MEM 13% SWAP 0B pressure normal\n",
+      "time_stderr": "\tCommand being timed: \"/home/user/.local/bin/host-pressure --no-sample\"\n\tUser time (seconds): 0.00\n\tSystem time (seconds): 0.00\n\tPercent of CPU this job got: 100%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0:00.00\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 2132\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 88\n\tVoluntary context switches: 1\n\tInvoluntary context switches: 1\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 8\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n"
+    }
+  }
+}
