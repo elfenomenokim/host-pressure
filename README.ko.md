@@ -18,10 +18,12 @@ Rust `--no-sample`은 5.2ms, 같은 M5 Pro에서 Python 명령은 52.5ms입니�
 
 </div>
 
+<p align="center">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/demo/dark.gif">
   <img src="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/demo/light.gif" alt="A resource line, an ok verdict, and repeated readings from the labeled demo fixture" width="650">
 </picture>
+</p>
 
 영상은 Python CLI에 [가상 측정값](docs/demo/fixture.py)을 넣어 기록했습니다. 실제 컴퓨터 성능이 아니라 출력 형식과 판정 동작을 보여 줍니다.
 

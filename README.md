@@ -18,10 +18,12 @@ Rust `--no-sample` returns in 5.2 ms; the Python command takes 52.5 ms on the sa
 
 </div>
 
+<p align="center">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/demo/dark.gif">
   <img src="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/demo/light.gif" alt="A resource line, an ok verdict, and repeated readings from the labeled demo fixture" width="650">
 </picture>
+</p>
 
 The recording runs the Python CLI with [synthetic readings](docs/demo/fixture.py). It shows formatting and verdicts, not a measurement of a real host.
 
