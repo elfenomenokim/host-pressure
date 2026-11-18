@@ -1,7 +1,16 @@
+<img src="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/logo.svg" width="96" height="96" alt="host-pressure: a gauge with its needle near the upper limit">
+
 # host-pressure
 [한국어](README.ko.md)
 
 A command-line resource check that tells you whether your machine has room for another job.
+
+Python 3.9+ · Rust
+
+[![pypi](https://img.shields.io/pypi/v/host-pressure?label=pypi)](https://pypi.org/project/host-pressure/)
+[![license](https://img.shields.io/github/license/elfenomenokim/host-pressure)](https://github.com/elfenomenokim/host-pressure/blob/main/LICENSE)
+
+Rust `--no-sample` returns in 5.2 ms; the Python command takes 52.5 ms on the same M5 Pro. Both from the saved 30-run measurement.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/demo/dark.gif">
@@ -172,6 +181,8 @@ print(result["level"], result["reasons"])
 
 ## Contributing
 
-Issues and platform reports are welcome; run `bash rust/parity.sh` from the source checkout. See [AGENTS.md](AGENTS.md) for the code layout and safety rules.
+Issues and platform reports are welcome; run `bash rust/parity.sh` from the source checkout. See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks and the review process, and [AGENTS.md](AGENTS.md) for the code layout and safety rules.
 
-License: [MIT](LICENSE).
+## License
+
+MIT. See [LICENSE](LICENSE).

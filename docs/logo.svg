@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="host-pressure: a gauge with its needle near the upper limit">
+  <rect width="96" height="96" rx="20" fill="#FBF0E1"/>
+  <path d="M22 66a26 26 0 0 1 52 0" fill="none" stroke="#B45309" stroke-width="6" stroke-linecap="round"/>
+  <path d="M48 66l16-17" fill="none" stroke="#B45309" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="48" cy="66" r="5.5" fill="#B45309"/>
+</svg>
