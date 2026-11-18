@@ -51,3 +51,17 @@ No separate linter is configured. Keep the existing formatting in each file.
 - Keep README.md, README.ko.md, pyproject description and public.json aligned.
 - Export new assets explicitly in public.json. Do not bump a version or publish
   packages without the maintainer's release instruction.
+
+## Code Review Rules
+
+A change is a real defect when it:
+
+- leaves Python and Rust apart on a flag, JSON field, exit code or threshold rule.
+- turns an unavailable CPU, thermal, battery or pressure reading into zero or a guess.
+- makes `--no-sample` wait, or lets `--watch` stop repeating.
+- ignores an unknown configuration key or template field instead of failing.
+- breaks reading a baseline file written by the previous version, or changes its JSON format.
+- shares one sampling interval across consumers that asked for independent IDs.
+- claims platform support from a wheel build or from a demo fixture instead of a live sensor read.
+
+Not defects: wording, formatting, comment style, requested extra tests, or a renamed helper.
