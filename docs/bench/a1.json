@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-17",
+  "host": "A1",
+  "os": "Linux-7.0.0-1013-oracle-aarch64-with-glibc2.39",
+  "method": "perf_counter subprocess.run, warmup 3, runs 30; separate /usr/bin/time -v for peak RSS",
+  "runs": {
+    "python": {
+      "command": [
+        "/tmp/hp-venv/bin/python",
+        "-m",
+        "host_pressure"
+      ],
+      "milliseconds": [
+        70.86658012121916,
+        72.02989980578423,
+        71.7781400308013,
+        72.72489927709103,
+        72.61045882478356,
+        75.9198167361319,
+        73.07061785832047,
+        71.1563010700047,
+        72.50933907926083,
+        70.85050083696842,
+        73.62597761675715,
+        76.91625505685806,
+        74.57421766594052,
+        72.1146990545094,
+        70.19298197701573,
+        69.980941247195,
+        70.73578098788857,
+        70.49726089462638,
+        74.69053706154227,
+        74.65845765545964,
+        70.67098002880812,
+        70.58394094929099,
+        73.11501866206527,
+        71.6459802351892,
+        71.98773976415396,
+        70.00930095091462,
+        69.24978224560618,
+        70.31118124723434,
+        70.6739411689341,
+        71.87565881758928
+      ],
+      "mean_ms": 72.05423956426482,
+      "time_stdout": "CPU 53% MEM 13% SWAP 0B pressure normal\n",
+      "time_stderr": "\tCommand being timed: \"/tmp/hp-venv/bin/python -m host_pressure\"\n\tUser time (seconds): 0.05\n\tSystem time (seconds): 0.01\n\tPercent of CPU this job got: 98%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0:00.07\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 15696\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 2405\n\tVoluntary context switches: 1\n\tInvoluntary context switches: 1\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 8\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n"
+    },
+    "rust": {
+      "command": [
+        "~/.local/bin/host-pressure"
+      ],
+      "milliseconds": [
+        302.5905857793987,
+        2.1445578895509243,
+        302.8337871655822,
+        2.077717799693346,
+        1.947837881743908,
+        302.3255071602762,
+        2.242518123239279,
+        302.75506619364023,
+        2.3813177831470966,
+        2.7573183178901672,
+        302.09302715957165,
+        4.647915717214346,
+        302.33434680849314,
+        1.9847978837788105,
+        2.132838126271963,
+        2.0551993511617184,
+        302.26374603807926,
+        2.5368379428982735,
+        302.82582715153694,
+        2.245117910206318,
+        303.0711058527231,
+        2.130438107997179,
+        2.0803981460630894,
+        2.2028381936252117,
+        302.17066686600447,
+        2.13483814150095,
+        302.7978269383311,
+        2.1980381570756435,
+        302.5947459973395,
+        2.2611990571022034
+      ],
+      "mean_ms": 122.42726545470457,
+      "time_stdout": "CPU 5% MEM 13% SWAP 0B pressure normal\n",
+      "time_stderr": "\tCommand being timed: \"~/.local/bin/host-pressure\"\n\tUser time (seconds): 0.00\n\tSystem time (seconds): 0.00\n\tPercent of CPU this job got: 0%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0:00.30\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 2148\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 91\n\tVoluntary context switches: 2\n\tInvoluntary context switches: 0\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 8\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n"
+    }
+  }
+}

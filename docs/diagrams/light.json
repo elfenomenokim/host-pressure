@@ -1,0 +1,46 @@
+{
+  "theme": "base",
+  "fontFamily": "Arial, Apple SD Gothic Neo, sans-serif",
+  "themeVariables": {
+    "darkMode": false,
+    "fontFamily": "Arial, Apple SD Gothic Neo, sans-serif",
+    "fontSize": "18px",
+    "primaryColor": "#e6e9ef",
+    "primaryTextColor": "#4c4f69",
+    "primaryBorderColor": "#1e66f5",
+    "lineColor": "#6c6f85",
+    "secondaryColor": "#dce0e8",
+    "tertiaryColor": "#e6e9ef",
+    "edgeLabelBackground": "#eff1f5",
+    "xyChart": {
+      "backgroundColor": "transparent",
+      "titleColor": "#4c4f69",
+      "xAxisLabelColor": "#4c4f69",
+      "yAxisLabelColor": "#4c4f69",
+      "yAxisTitleColor": "#4c4f69",
+      "xAxisLineColor": "#6c6f85",
+      "yAxisLineColor": "#6c6f85",
+      "plotColorPalette": "#1e66f5"
+    }
+  },
+  "flowchart": {
+    "htmlLabels": false,
+    "curve": "linear",
+    "wrappingWidth": 220,
+    "rankSpacing": 25,
+    "nodeSpacing": 25,
+    "padding": 12
+  },
+  "xyChart": {
+    "width": 880,
+    "height": 400,
+    "xAxis": {
+      "labelFontSize": 13
+    },
+    "yAxis": {
+      "labelFontSize": 14
+    }
+  },
+  "look": "classic",
+  "htmlLabels": false
+}

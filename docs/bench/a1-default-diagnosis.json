@@ -1,0 +1,638 @@
+{
+  "method": "30 default --json calls per edition and interval, warmup 3, isolated state directory; pause is outside measured call",
+  "runs": {
+    "python-gap-0": {
+      "mean_ms": 70.78298761819799,
+      "cpu_sources": {
+        "baseline": 30
+      },
+      "samples": [
+        {
+          "milliseconds": 71.66974293068051,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 72.05618266016245,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 68.58390476554632,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 68.7919850461185,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 70.7299429923296,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 70.5498643219471,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 68.30082600936294,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 71.15594297647476,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 70.80050325021148,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 69.88546438515186,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 68.66542575880885,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 69.02018515393138,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 13
+        },
+        {
+          "milliseconds": 69.79134399443865,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 70.38086373358965,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 74.08402115106583,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 15
+        },
+        {
+          "milliseconds": 72.58118316531181,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 15
+        },
+        {
+          "milliseconds": 70.99950360134244,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 69.94958408176899,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 73.95426090806723,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 72.0634632743895,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 15
+        },
+        {
+          "milliseconds": 70.12070436030626,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 70.60022372752428,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 15
+        },
+        {
+          "milliseconds": 71.18410291150212,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 13
+        },
+        {
+          "milliseconds": 71.31202332675457,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 15
+        },
+        {
+          "milliseconds": 68.84918501600623,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 13
+        },
+        {
+          "milliseconds": 70.69582305848598,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 15
+        },
+        {
+          "milliseconds": 68.6244647949934,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 13
+        },
+        {
+          "milliseconds": 70.30690414831042,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 14
+        },
+        {
+          "milliseconds": 77.89297821000218,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 16
+        },
+        {
+          "milliseconds": 69.88902483135462,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 15
+        }
+      ]
+    },
+    "python-gap-0.05": {
+      "mean_ms": 70.55055312812328,
+      "cpu_sources": {
+        "baseline": 30
+      },
+      "samples": [
+        {
+          "milliseconds": 67.30982614681125,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 69.77402372285724,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 23
+        },
+        {
+          "milliseconds": 73.47394106909633,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 70.90142415836453,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 25
+        },
+        {
+          "milliseconds": 70.78594388440251,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 69.25010494887829,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 68.70454596355557,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 72.17578310519457,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 23
+        },
+        {
+          "milliseconds": 68.69210535660386,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 25
+        },
+        {
+          "milliseconds": 73.1638609431684,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 69.26822476089,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 25
+        },
+        {
+          "milliseconds": 69.87114390358329,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 71.99098216369748,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 69.22378484159708,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 69.04286472126842,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 23
+        },
+        {
+          "milliseconds": 71.53686275705695,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 68.93546460196376,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 68.07126617059112,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 70.47030422836542,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 68.29982623457909,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 23
+        },
+        {
+          "milliseconds": 68.83054506033659,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 23
+        },
+        {
+          "milliseconds": 70.81438414752483,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 25
+        },
+        {
+          "milliseconds": 69.22530522570014,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 25
+        },
+        {
+          "milliseconds": 72.69958220422268,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 69.98810404911637,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 25
+        },
+        {
+          "milliseconds": 70.8093037828803,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 23
+        },
+        {
+          "milliseconds": 72.91418081149459,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 25
+        },
+        {
+          "milliseconds": 72.50770181417465,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 74.63270099833608,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 24
+        },
+        {
+          "milliseconds": 73.1525020673871,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 26
+        }
+      ]
+    },
+    "rust-gap-0": {
+      "mean_ms": 112.1080078650266,
+      "cpu_sources": {
+        "baseline": 19,
+        "sample": 11
+      },
+      "samples": [
+        {
+          "milliseconds": 2.198837697505951,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 60
+        },
+        {
+          "milliseconds": 1.8430775962769985,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 1
+        },
+        {
+          "milliseconds": 302.2502791136503,
+          "cpuSource": "sample",
+          "baseline_delta_total": 0
+        },
+        {
+          "milliseconds": 2.2713979706168175,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 61
+        },
+        {
+          "milliseconds": 302.1212387830019,
+          "cpuSource": "sample",
+          "baseline_delta_total": 0
+        },
+        {
+          "milliseconds": 2.0927577279508114,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 61
+        },
+        {
+          "milliseconds": 302.4705587886274,
+          "cpuSource": "sample",
+          "baseline_delta_total": 0
+        },
+        {
+          "milliseconds": 2.1009580232203007,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 60
+        },
+        {
+          "milliseconds": 2.1234778687357903,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 2
+        },
+        {
+          "milliseconds": 302.1890791133046,
+          "cpuSource": "sample",
+          "baseline_delta_total": 0
+        },
+        {
+          "milliseconds": 2.0787981338799,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 60
+        },
+        {
+          "milliseconds": 1.9159582443535328,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 1
+        },
+        {
+          "milliseconds": 302.03703977167606,
+          "cpuSource": "sample",
+          "baseline_delta_total": 0
+        },
+        {
+          "milliseconds": 1.9419589079916477,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 60
+        },
+        {
+          "milliseconds": 302.13179904967546,
+          "cpuSource": "sample",
+          "baseline_delta_total": 0
+        },
+        {
+          "milliseconds": 2.021199092268944,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 59
+        },
+        {
+          "milliseconds": 302.24831914529204,
+          "cpuSource": "sample",
+          "baseline_delta_total": 0
+        },
+        {
+          "milliseconds": 1.890519168227911,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 61
+        },
+        {
+          "milliseconds": 302.0946788601577,
+          "cpuSource": "sample",
+          "baseline_delta_total": 0
+        },
+        {
+          "milliseconds": 1.961998175829649,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 61
+        },
+        {
+          "milliseconds": 302.1741989068687,
+          "cpuSource": "sample",
+          "baseline_delta_total": 0
+        },
+        {
+          "milliseconds": 1.7817579209804535,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 59
+        },
+        {
+          "milliseconds": 2.21087783575058,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 1
+        },
+        {
+          "milliseconds": 1.9499990157783031,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 1
+        },
+        {
+          "milliseconds": 302.3905591107905,
+          "cpuSource": "sample",
+          "baseline_delta_total": 0
+        },
+        {
+          "milliseconds": 2.2043981589376926,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 60
+        },
+        {
+          "milliseconds": 302.6327188126743,
+          "cpuSource": "sample",
+          "baseline_delta_total": 0
+        },
+        {
+          "milliseconds": 2.1383981220424175,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 63
+        },
+        {
+          "milliseconds": 2.0805979147553444,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 1
+        },
+        {
+          "milliseconds": 1.6927989199757576,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 1
+        }
+      ]
+    },
+    "rust-gap-0.05": {
+      "mean_ms": 2.3619116749614477,
+      "cpu_sources": {
+        "baseline": 30
+      },
+      "samples": [
+        {
+          "milliseconds": 2.2464380599558353,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 71
+        },
+        {
+          "milliseconds": 2.3300377652049065,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 11
+        },
+        {
+          "milliseconds": 2.642477862536907,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 11
+        },
+        {
+          "milliseconds": 2.427997998893261,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.645398024469614,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.2613578476011753,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 12
+        },
+        {
+          "milliseconds": 2.1500387229025364,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 11
+        },
+        {
+          "milliseconds": 2.31923907995224,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.222158946096897,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.3880391381680965,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 11
+        },
+        {
+          "milliseconds": 2.3003192618489265,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.274438738822937,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.1683587692677975,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 11
+        },
+        {
+          "milliseconds": 2.6279580779373646,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 11
+        },
+        {
+          "milliseconds": 2.3370389826595783,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.361118793487549,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.3434381000697613,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 11
+        },
+        {
+          "milliseconds": 2.570557873696089,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 11
+        },
+        {
+          "milliseconds": 2.2416780702769756,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.3472378961741924,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.429837826639414,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.7641584165394306,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 12
+        },
+        {
+          "milliseconds": 2.040478400886059,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 11
+        },
+        {
+          "milliseconds": 2.0781178027391434,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 9
+        },
+        {
+          "milliseconds": 2.022678032517433,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.0653586834669113,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.068718895316124,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 12
+        },
+        {
+          "milliseconds": 2.69883731380105,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 2.076519187539816,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 10
+        },
+        {
+          "milliseconds": 3.40731767937541,
+          "cpuSource": "baseline",
+          "baseline_delta_total": 11
+        }
+      ]
+    }
+  }
+}
