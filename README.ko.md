@@ -1,3 +1,5 @@
+<div align="center">
+
 <img src="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/logo.svg" width="96" height="96" alt="바늘을 위쪽 한계로 올린 압력계 아이콘">
 
 # host-pressure
@@ -12,9 +14,13 @@ Python 3.9+ · Rust
 
 Rust `--no-sample`은 5.2ms, 같은 M5 Pro에서 Python 명령은 52.5ms입니다. 두 값 모두 저장된 30회 측정에서 가져왔습니다.
 
+[설치](#설치) · [시작하기](#시작하기) · [만든 이유](#만든-이유)
+
+</div>
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/demo/dark.gif">
-  <img src="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/demo/light.gif" alt="A resource line, an ok verdict, and repeated readings from the labeled demo fixture" width="1200">
+  <img src="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/demo/light.gif" alt="A resource line, an ok verdict, and repeated readings from the labeled demo fixture" width="650">
 </picture>
 
 영상은 Python CLI에 [가상 측정값](docs/demo/fixture.py)을 넣어 기록했습니다. 실제 컴퓨터 성능이 아니라 출력 형식과 판정 동작을 보여 줍니다.

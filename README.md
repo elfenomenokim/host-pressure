@@ -1,3 +1,5 @@
+<div align="center">
+
 <img src="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/logo.svg" width="96" height="96" alt="host-pressure: a gauge with its needle near the upper limit">
 
 # host-pressure
@@ -12,9 +14,13 @@ Python 3.9+ · Rust
 
 Rust `--no-sample` returns in 5.2 ms; the Python command takes 52.5 ms on the same M5 Pro. Both from the saved 30-run measurement.
 
+[Install](#install) · [Quick start](#quick-start) · [Why](#why)
+
+</div>
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/demo/dark.gif">
-  <img src="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/demo/light.gif" alt="A resource line, an ok verdict, and repeated readings from the labeled demo fixture" width="1200">
+  <img src="https://raw.githubusercontent.com/elfenomenokim/host-pressure/main/docs/demo/light.gif" alt="A resource line, an ok verdict, and repeated readings from the labeled demo fixture" width="650">
 </picture>
 
 The recording runs the Python CLI with [synthetic readings](docs/demo/fixture.py). It shows formatting and verdicts, not a measurement of a real host.
