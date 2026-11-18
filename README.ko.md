@@ -140,7 +140,7 @@ A1에서 판본별 기준값 폴더를 나눠 다시 확인했습니다. Rust를
 
 파일은 `--config FILE`, `HOST_PRESSURE_CONFIG`, `$XDG_CONFIG_HOME/host-pressure/config.json` 순으로 선택합니다. 파일 키는 `memory_busy`처럼 쓰고, 환경 변수는 `HOST_PRESSURE_MEMORY_BUSY=80`처럼 씁니다. 값의 우선순위는 명령줄 → 환경 변수 → 파일입니다. 없는 키는 오류로 처리합니다.
 
-PSI는 파일과 환경 변수에서 `psi_cpu_busy`, `psi_cpu_overloaded`, `psi_memory_busy`, `psi_memory_overloaded`, `psi_io_busy`, `psi_io_overloaded`를 설정할 수 있습니다. macOS 커널 압력과 발열 상태의 판정 규칙은 고정입니다.
+PSI는 파일과 환경 변수에서 `psi_cpu_busy`, `psi_cpu_overloaded`, `psi_memory_busy`, `psi_memory_overloaded`, `psi_io_busy`, `psi_io_overloaded`를 설정할 수 있습니다. macOS 커널 압력과 발열 상태의 판정 규칙은 고정입니다. Linux의 PSI는 `psi_*` 임계값으로만 판정하므로, 값을 올리면 판정이 완화됩니다.
 
 CPU 기준값은 `$XDG_STATE_HOME/host-pressure`에 저장합니다. `HOST_PRESSURE_STATE_DIR`로 위치를 바꿀 수 있습니다. 여러 프로그램이 호출한다면 `--consumer`를 각각 지정하세요. 측정 구간은 이전 호출부터 지금까지이며, Rust와 Python이 같은 저장 형식을 씁니다.
 

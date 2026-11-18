@@ -152,11 +152,16 @@ def verdict(readings: Dict[str, Any], thresholds: Optional[Thresholds] = None) -
         add(_above(disk["percent"], rules.disk_busy, rules.disk_overloaded,
                    "disk %s" % disk["mount"], "%"))
 
-    pressure = readings.get("pressure")
-    if pressure == "critical":
-        found.append({"level": "overloaded", "reason": "memory pressure critical"})
-    elif pressure == "warning":
-        found.append({"level": "busy", "reason": "memory pressure warning"})
+    # On Linux the pressure label is a fixed PSI mapping. The configurable
+    # psi_* rules above already read those same numbers, so applying the label
+    # again would override a raised threshold. The macOS pressure mapping and
+    # the memory-available fallback keep their fixed meaning.
+    if readings.get("pressureSource") != "psi-avg60":
+        pressure = readings.get("pressure")
+        if pressure == "critical":
+            found.append({"level": "overloaded", "reason": "memory pressure critical"})
+        elif pressure == "warning":
+            found.append({"level": "busy", "reason": "memory pressure warning"})
 
     thermal = readings.get("thermal")
     if thermal in ("critical", "serious"):

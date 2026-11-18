@@ -409,16 +409,22 @@ pub fn verdict_reading(r: &crate::core::Reading, rules: &Thresholds) -> Verdict 
         }
     }
 
-    match r.pressure.as_str() {
-        "critical" => found.push(Found {
-            level: "overloaded".to_string(),
-            reason: "memory pressure critical".to_string(),
-        }),
-        "warning" => found.push(Found {
-            level: "busy".to_string(),
-            reason: "memory pressure warning".to_string(),
-        }),
-        _ => {}
+    // On Linux the pressure label is a fixed PSI mapping. The configurable
+    // psi_* rules above already read those same numbers, so applying the label
+    // again would override a raised threshold. The macOS pressure mapping and
+    // the memory-available fallback keep their fixed meaning.
+    if r.pressure_source != "psi-avg60" {
+        match r.pressure.as_str() {
+            "critical" => found.push(Found {
+                level: "overloaded".to_string(),
+                reason: "memory pressure critical".to_string(),
+            }),
+            "warning" => found.push(Found {
+                level: "busy".to_string(),
+                reason: "memory pressure warning".to_string(),
+            }),
+            _ => {}
+        }
     }
 
     match r.thermal.as_deref() {
@@ -509,4 +515,68 @@ pub fn verdict_reading(r: &crate::core::Reading, rules: &Thresholds) -> Verdict 
 #[allow(dead_code)]
 pub fn config_path_for_test() -> PathBuf {
     Path::new("/nonexistent").to_path_buf()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::core::Reading;
+
+    fn psi_reading() -> Reading {
+        let mut memory = HashMap::new();
+        memory.insert("some_avg60".to_string(), 20.0);
+        memory.insert("full_avg60".to_string(), 6.0);
+        let mut psi = HashMap::new();
+        psi.insert("memory".to_string(), memory);
+        Reading {
+            observed_at: None,
+            os: Some("linux".to_string()),
+            hostname: None,
+            ncpu: None,
+            cpu_percent: None,
+            cpu_source: None,
+            memory_percent: None,
+            memory_total_bytes: None,
+            memory_used_bytes: None,
+            swap_bytes: None,
+            swap_total_bytes: None,
+            pressure: "critical".to_string(),
+            pressure_source: "psi-avg60".to_string(),
+            loadavg: None,
+            uptime: None,
+            uptime_seconds: None,
+            thermal: None,
+            battery: None,
+            psi: Some(psi),
+            disks: vec![],
+        }
+    }
+
+    fn relaxed() -> Thresholds {
+        Thresholds {
+            psi_memory_busy: 50.0,
+            psi_memory_overloaded: 50.0,
+            ..Thresholds::default()
+        }
+    }
+
+    #[test]
+    fn configured_psi_thresholds_decide_the_linux_verdict() {
+        assert_eq!(
+            verdict_reading(&psi_reading(), &Thresholds::default()).level,
+            "overloaded"
+        );
+        assert_eq!(verdict_reading(&psi_reading(), &relaxed()).level, "ok");
+    }
+
+    #[test]
+    fn macos_pressure_label_keeps_its_fixed_mapping() {
+        let mut r = psi_reading();
+        r.os = Some("darwin".to_string());
+        r.pressure_source = "nspressuredispatch".to_string();
+        r.psi = None;
+        let v = verdict_reading(&r, &relaxed());
+        assert_eq!(v.level, "overloaded");
+        assert_eq!(v.reasons, vec!["memory pressure critical".to_string()]);
+    }
 }

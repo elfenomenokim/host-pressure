@@ -266,8 +266,41 @@ fn reading_json(r: &core::Reading, v: &verdict::Verdict) -> String {
     s
 }
 
-// ---------- arg parsing ----------
+/// Fold the pretty builders to one line with Python `json.dumps` separators, so
+/// watch output is one parseable object per line.
+fn compact_json(pretty: &str) -> String {
+    let mut out = String::with_capacity(pretty.len());
+    let mut in_string = false;
+    let mut escaped = false;
+    for c in pretty.chars() {
+        if in_string {
+            out.push(c);
+            if escaped {
+                escaped = false;
+            } else if c == '\\' {
+                escaped = true;
+            } else if c == '"' {
+                in_string = false;
+            }
+            continue;
+        }
+        match c {
+            '"' => {
+                in_string = true;
+                out.push(c);
+            }
+            ':' | ',' => {
+                out.push(c);
+                out.push(' ');
+            }
+            c if c.is_ascii_whitespace() => {}
+            c => out.push(c),
+        }
+    }
+    out
+}
 
+// ---------- arg parsing ----------
 #[derive(Debug, Default)]
 struct Common {
     consumer: String,
@@ -319,7 +352,7 @@ fn parse_common_sampling_thresholds(
     prog: &str,
     usage: &str,
     allow_no_sample: bool,
-) -> Result<(Common, Sampling, Overrides, usize), i32> {
+) -> Result<(Common, Sampling, Overrides, usize, bool), i32> {
     let mut common = Common {
         consumer: "default".to_string(),
         state_dir: None,
@@ -328,6 +361,7 @@ fn parse_common_sampling_thresholds(
     };
     let mut sampling = Sampling::default();
     let mut overrides: Overrides = HashMap::new();
+    let mut json = false;
     let mut i = start;
     while i < args.len() {
         let a = args[i].as_str();
@@ -340,6 +374,10 @@ fn parse_common_sampling_thresholds(
                 print!("{}", print_usage_default());
             }
             return Err(-1); // signal: help printed, exit 0
+        } else if a == "--json" {
+            // Parsed here, not after the loop, so a later --no-sample or
+            // threshold flag is still accepted in any order like argparse.
+            json = true;
         } else if a == "--consumer" {
             let v = take_value(args, &mut i, "--consumer", prog, usage)?;
             common.consumer = v;
@@ -445,7 +483,7 @@ fn parse_common_sampling_thresholds(
         eprint!("{}", usage);
         return Err(2);
     }
-    Ok((common, sampling, overrides, i))
+    Ok((common, sampling, overrides, i, json))
 }
 
 // ---------- reading ----------
@@ -728,7 +766,7 @@ fn cmd_default(args: &[String]) -> i32 {
                 }
             } else if json {
                 let payload = reading_json(&readings, &v);
-                println!("{}", payload);
+                println!("{}", compact_json(&payload));
                 let _ = std::io::stdout().flush();
             } else {
                 println!("{}", formatting::one_line(&readings, all));
@@ -767,9 +805,8 @@ fn cmd_check(args: &[String]) -> i32 {
         print!("{}", formatting::format_help_text());
         return 0;
     }
-    let mut json = false;
     let res = parse_common_sampling_thresholds(args, 0, prog, &usage, true);
-    let (common, sampling, overrides, idx) = match res {
+    let (common, sampling, overrides, idx, json) = match res {
         Ok(v) => v,
         Err(code) => {
             if code == -1 {
@@ -778,25 +815,12 @@ fn cmd_check(args: &[String]) -> i32 {
             return code;
         }
     };
-    // remaining args from idx
-    let mut j = idx;
-    while j < args.len() {
-        let a = args[j].as_str();
-        if a == "--json" {
-            json = true;
-            j += 1;
-        } else if a == "-h" || a == "--help" {
-            print!("{}", usage);
-            return 0;
-        } else if a.starts_with('-') {
-            eprintln!("{}: error: unrecognized arguments: {}", prog, args[j..].join(" "));
-            eprint!("{}", usage);
-            return 2;
-        } else {
-            eprintln!("{}: error: unrecognized arguments: {}", prog, args[j..].join(" "));
-            eprint!("{}", usage);
-            return 2;
-        }
+    // The shared parser consumed --json and every common, sampling and
+    // threshold flag, so only an unknown token can remain.
+    if idx < args.len() {
+        eprintln!("{}: error: unrecognized arguments: {}", prog, args[idx..].join(" "));
+        eprint!("{}", usage);
+        return 2;
     }
     let rules = match rules_for(&common, &overrides) {
         Ok(r) => r,
@@ -1067,4 +1091,33 @@ fn main() {
         }
     };
     std::process::exit(code);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn compact_json_keeps_one_object_per_line() {
+        let pretty = "{\n  \"a\": 1,\n  \"b\": [\n    2,\n    3\n  ],\n  \"text\": \"x  y: z\"\n}";
+        assert_eq!(
+            compact_json(pretty),
+            "{\"a\": 1, \"b\": [2, 3], \"text\": \"x  y: z\"}"
+        );
+    }
+
+    #[test]
+    fn check_accepts_options_after_json() {
+        let args: Vec<String> = ["--json", "--no-sample", "--cpu-busy", "10"]
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
+        let (_, sampling, overrides, idx, json) =
+            parse_common_sampling_thresholds(&args, 0, "host-pressure check", "usage", true)
+                .expect("parse");
+        assert!(json);
+        assert!(sampling.no_sample);
+        assert_eq!(overrides.get("cpu_busy"), Some(&Some(10.0)));
+        assert_eq!(idx, args.len());
+    }
 }
