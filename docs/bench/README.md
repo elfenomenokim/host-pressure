@@ -47,3 +47,20 @@ reads. `a1-default-diagnosis.json` records `cpuSource` and the exact tick-delta
 total for each call: every Rust sampling fallback had zero baseline tick delta.
 All 30 spaced Rust calls used the baseline. Python's longer startup naturally
 spaced its readings enough to observe new ticks in this run.
+
+## psutil comparison, 2026-11-19
+
+`m5-psutil.json` / `.txt`: Hyperfine 2.0.0 on the M5 Pro, three warmups and 30
+runs per command. It compares the Rust and Python editions with
+`psutil_read.py`, which prints the psutil CPU, memory and swap values as one
+JSON line, and with the same script plus the macOS pressure `sysctl`. psutil is
+not a dependency of host-pressure: install it outside the checkout and point
+`PYTHONPATH` at it, then run the command from the README. On this run:
+
+```sh
+python3 -m pip install --target /tmp/hp-psutil psutil
+PYTHONPATH=/tmp/hp-psutil python3 docs/bench/psutil_read.py
+```
+
+The machine was busy during these runs, so the times are larger than the
+2026-11-17 table; only the comparison between the rows holds.

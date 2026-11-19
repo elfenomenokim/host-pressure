@@ -14,7 +14,7 @@ Python 3.9+ · Rust
 
 Rust `--no-sample`은 5.2ms, 같은 M5 Pro에서 Python 명령은 52.5ms입니다. 두 값 모두 저장된 30회 측정에서 가져왔습니다.
 
-[설치](#설치) · [시작하기](#시작하기) · [만든 이유](#만든-이유)
+[설치](#설치) · [시작하기](#시작하기) · [만든 이유](#만든-이유) · [psutil 비교](#host-pressure와-psutil)
 
 </div>
 
@@ -69,7 +69,37 @@ busy: memory 72% >= 60%
 
 빌드를 하나 더 실행하기 전에 메모리 사용률만 보고 판단하기는 어렵습니다. `host-pressure check`는 CPU·메모리·코어당 부하·디스크 사용률과 운영체제의 압력 신호를 함께 봅니다. 판정과 그 근거를 한 줄로 받습니다.
 
-어느 프로세스가 자원을 쓰는지 찾을 때는 `top`이나 `htop`이 맞습니다. 프로그램에서 프로세스를 다루려면 `psutil`을 쓰면 됩니다. 이 도구는 스크립트가 종료 코드로 다음 작업을 정하거나, 상태 표시줄에 한 줄을 넣거나, macOS 메모리 압력과 Linux PSI를 함께 읽을 때 씁니다.
+어느 프로세스가 자원을 쓰는지 찾을 때는 `top`이나 `htop`이 맞습니다. 이 도구는 스크립트가 종료 코드로 다음 작업을 정하거나, 상태 표시줄에 한 줄을 넣거나, macOS 메모리 압력과 Linux PSI를 함께 읽을 때 씁니다.
+
+## host-pressure와 psutil
+
+psutil은 범용 라이브러리입니다. 프로세스별·코어별 CPU, 메모리, 스왑, 디스크·네트워크 카운터, 열린 파일과 연결을 Linux·macOS·Windows에서 읽습니다. 셸 명령 없이 커널에서 직접 읽습니다.
+
+psutil이 돌려주지 않는 것은 판정입니다. `cpu_percent()`와 `virtual_memory().percent`는 판단의 재료이지 판단이 아닙니다. psutil 7.2.2의 `virtual_memory()`에는 macOS 커널 메모리 압력(`kern.memorystatus_vm_pressure_level`) 필드가 없고, Linux 압력 지연(`/proc/pressure/memory`) 필드도 없습니다. 이 값이 필요하면 스크립트가 `sysctl`을 호출하거나 `/proc`을 읽거나 ctypes로 묶는 부분을 직접 만들어야 합니다.
+
+host-pressure가 더하는 것은 네 가지입니다.
+
+- **판정.** 임계값이 측정값을 `ok`, `busy`, `overloaded`로 바꾸고, 종료 코드 0, 1, 2와 이유를 함께 돌려줍니다.
+- **사용률이 아닌 압력.** macOS 메모리 압력은 `sysctl`과 Mach로, Linux PSI는 `/proc`에서 커널 값을 읽습니다. 둘 다 서브프로세스를 쓰지 않습니다.
+- **첫 호출의 CPU 값.** 기준값을 호출 사이에 `$XDG_STATE_HOME/host-pressure`에 저장합니다. psutil의 첫 `cpu_percent()`는 import부터 호출까지만 재며, 이 컴퓨터의 새 프로세스 10회 모두 `0.0`이었습니다.
+- **한 줄.** 상태 표시줄은 기본 한 줄이나 `--format`을 읽습니다. 프로그램은 `--json`을 읽고, `--watch --json`은 한 줄에 객체 하나를 씁니다.
+
+Python 프로그램이 프로세스별·연결별 정보를 필요로 하거나 이미 오래 도는 프로세스 안이라면 psutil을 쓰세요. 셸 스크립트·상태 표시줄·스케줄러가 예/아니오 답과 그 근거 신호를 필요로 하면 host-pressure를 쓰세요.
+
+두 도구의 메모리 사용률은 같은 값이 아닙니다. psutil은 캐시와 inactive 페이지를 사용 가능으로 셉니다. host-pressure는 Activity Monitor처럼 앱 메모리, wired 페이지, 압축 페이지를 셉니다. 이 M5 Pro에서 같은 순간에 한 번씩 실행한 값은 host-pressure `MEM 78%`, psutil `virtual_memory().percent` 55.1(64GiB 중 28.7GiB 사용 가능)입니다. 두 도구 사이에서 임계값을 그대로 옮기지 마세요.
+
+### 이 M5 Pro에서 잰 값
+
+Hyperfine 2.0.0, 명령마다 3회 예열 후 30회 실행, 2026-11-19, 저장 파일 `docs/bench/m5-psutil.json`. 모든 명령은 새 프로세스로 실행했고, RSS는 그 프로세스의 최대값입니다.
+
+| 명령 | 평균 (ms) | RSS (MiB) |
+|---|---:|---:|
+| `host-pressure --json --no-sample` (Rust) | 4.4 | 9.8 |
+| `python3 -m host_pressure --json --no-sample` | 48.6 | 20.9 |
+| `python3 docs/bench/psutil_read.py` | 36.7 | 17.9 |
+| `python3 docs/bench/psutil_read.py --pressure` | 35.0 | 17.9 |
+
+psutil 행이 Python 판본보다 빠른 것은 하는 일이 적기 때문입니다. 판정, 설정 파일, 임계값, 저장된 기준값이 없습니다. `sysctl` 호출을 더한 판본은 시간 차이가 측정 오차 안이었습니다. 상태 표시줄을 1초마다 갱신한다면 Rust 명령을 부르세요.
 
 ## 측정
 

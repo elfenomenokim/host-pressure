@@ -1,0 +1,20 @@
+Benchmark 1: host-pressure --json --no-sample (30 runs)
+                mean     ±       σ          min     …     max
+  Wall Time      4.4 ms  ±     0.3 ms       3.6 ms  …     5.1 ms
+  Memory         9.8 MiB ±     0.0 MiB      9.7 MiB …     9.8 MiB
+ 
+Benchmark 2: PYTHONPATH=src python3 -m host_pressure --json --no-sample (30 runs)
+                mean     ±       σ          min     …     max
+  Wall Time     48.6 ms  ±     3.9 ms      39.1 ms  …    58.2 ms         +1014.0%  (11.1x slower)
+  Memory        20.9 MiB ±     0.0 MiB     20.8 MiB …    20.9 MiB         +113.6%  (2.1x more)
+ 
+Benchmark 3: PYTHONPATH=/tmp/hp-psutil-compare/lib python3 docs/bench/psutil_read.py (30 runs)
+                mean     ±       σ          min     …     max
+  Wall Time     36.7 ms  ±     1.7 ms      35.2 ms  …    43.5 ms          +741.0%  (8.4x slower)
+  Memory        17.9 MiB ±     0.0 MiB     17.8 MiB …    18.0 MiB          +83.1%  (1.8x more)
+ 
+Benchmark 4: PYTHONPATH=/tmp/hp-psutil-compare/lib python3 docs/bench/psutil_read.py --pressure (30 runs)
+                mean     ±       σ          min     …     max
+  Wall Time     35.0 ms  ±     3.0 ms      32.3 ms  …    42.3 ms          +703.2%  (8.0x slower)
+  Memory        17.9 MiB ±     0.0 MiB     17.8 MiB …    17.9 MiB          +83.0%  (1.8x more)
+ 

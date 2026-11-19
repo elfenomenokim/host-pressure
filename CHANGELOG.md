@@ -3,6 +3,16 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses `MAJOR.MINOR.PATCH`.
 
+## [0.1.5] - 2026-11-19
+
+### Added
+
+- "host-pressure vs psutil" in README.md and README.ko.md: what psutil returns,
+  the four things this command adds, which to use, a matched memory-percentage
+  example, and a saved 30-run measurement (`docs/bench/m5-psutil.json`) with
+  `docs/bench/psutil_read.py` as its runner. Documentation only; no command,
+  flag, JSON field or threshold changed.
+
 ## [0.1.4] - 2026-11-18
 
 ### Fixed

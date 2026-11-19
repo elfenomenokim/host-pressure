@@ -14,7 +14,7 @@ Python 3.9+ · Rust
 
 Rust `--no-sample` returns in 5.2 ms; the Python command takes 52.5 ms on the same M5 Pro. Both from the saved 30-run measurement.
 
-[Install](#install) · [Quick start](#quick-start) · [Why](#why)
+[Install](#install) · [Quick start](#quick-start) · [Why](#why) · [vs psutil](#host-pressure-vs-psutil)
 
 </div>
 
@@ -73,7 +73,37 @@ busy: memory 72% >= 60%
 
 Before you start another build, a memory percentage alone leaves you guessing. `host-pressure check` combines CPU, memory, load per core, disk usage, and the pressure signals your operating system exposes. You get a verdict and the readings that caused it.
 
-Use `top` or `htop` when you need to find the process using resources. Use `psutil` when you need a general process-management library. Use this command when a script needs an exit code, a status bar needs one line, or you need macOS memory pressure and Linux PSI alongside ordinary usage figures.
+Use `top` or `htop` when you need to find the process using resources. Use this command when a script needs an exit code, a status bar needs one line, or you need macOS memory pressure and Linux PSI alongside ordinary usage figures.
+
+## host-pressure vs psutil
+
+[psutil](https://github.com/giampaolo/psutil) is the general library. It reports CPU per process and per core, memory, swap, disk and network counters, open files and connections, on Linux, macOS and Windows. It reads them from the kernel without a shell command.
+
+What psutil does not return is a verdict. `cpu_percent()` and `virtual_memory().percent` are inputs to a decision, not the decision. In psutil 7.2.2, `virtual_memory()` has no field for the macOS kernel memory-pressure level (`kern.memorystatus_vm_pressure_level`), and none for Linux pressure stalls (`/proc/pressure/memory`). A script that needs either one adds its own reader: a `sysctl` call, a `/proc` parse or a ctypes binding.
+
+host-pressure adds four things:
+
+- **A verdict.** Thresholds turn the readings into `ok`, `busy` or `overloaded`, with exit codes 0, 1 and 2 and a reason line.
+- **Pressure, not only usage.** macOS memory pressure comes from the kernel through `sysctl` and Mach; Linux PSI comes from `/proc`. Neither needs a subprocess.
+- **A CPU number on the first call.** The baseline lives in `$XDG_STATE_HOME/host-pressure` between calls. psutil's first `cpu_percent()` covers import to call only, and printed `0.0` in 10 of 10 fresh-process runs here.
+- **One line.** A status bar reads the default line or `--format`. A program reads `--json`, or one compact object per line with `--watch --json`.
+
+Use psutil when a Python program needs per-process or per-connection data, or when the process already runs for a long time. Use host-pressure when a shell script, status bar or scheduler needs a yes/no answer with the signals behind it.
+
+The memory percentages differ. psutil counts cached and inactive pages as available. host-pressure counts app memory, wired pages and compressed pages, as Activity Monitor does. One pair of calls on this M5 Pro at the same moment: host-pressure `MEM 78%`, psutil `virtual_memory().percent` 55.1 with 28.7 GiB available of 64 GiB. Do not carry a threshold from one tool to the other unchanged.
+
+### Measured on this M5 Pro
+
+Hyperfine 2.0.0, three warmups and 30 runs per command, 2026-11-19, saved in `docs/bench/m5-psutil.json`. Each command starts a fresh process. RSS is the peak of that process.
+
+| Command | Mean (ms) | RSS (MiB) |
+|---|---:|---:|
+| `host-pressure --json --no-sample` (Rust) | 4.4 | 9.8 |
+| `python3 -m host_pressure --json --no-sample` | 48.6 | 20.9 |
+| `python3 docs/bench/psutil_read.py` | 36.7 | 17.9 |
+| `python3 docs/bench/psutil_read.py --pressure` | 35.0 | 17.9 |
+
+The psutil rows run faster than the Python edition because they do less: no verdict, no config file, no thresholds, no stored baseline. Adding the `sysctl` call did not change the time measurably. Call the Rust command when a status bar refreshes every second.
 
 ## Measurements
 
