@@ -33,8 +33,9 @@ most: a change made in one edition only is a defect.
 - **A missing reading kept as `null`**, never `0`. An unavailable sensor and an idle machine are
   different facts.
 - **A line under Unreleased** in [CHANGELOG.md](CHANGELOG.md) when a user will notice.
-- **The platforms you did not test** written in the pull request. macOS, Linux and Windows readers
-  expose different sensors; say which host you ran it on.
+- **The platforms you did not test** written in the pull request. The `tests` workflow runs Rust and
+  Python unit tests on Ubuntu, macOS and Windows with Python 3.9 and 3.13 (plus `rust/parity.sh` on
+  Ubuntu and macOS); physical-host sensors still differ by machine, so say which host you ran it on.
 
 ## Review
 
