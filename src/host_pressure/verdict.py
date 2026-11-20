@@ -148,7 +148,7 @@ def _above(value: Optional[float], busy: float, overloaded: float, label: str,
 
 def _num(value: float) -> str:
     text = ("%.1f" % value).rstrip("0").rstrip(".")
-    return text or "0"
+    return "0" if text in ("", "-0") else text
 
 
 def verdict(readings: Dict[str, Any], thresholds: Optional[Thresholds] = None) -> Dict[str, Any]:

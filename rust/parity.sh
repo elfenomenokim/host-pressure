@@ -72,16 +72,36 @@ else
   bad "check exit code" "py=$py_code rs=$rs_code"
 fi
 
-# forced busy must exit 1 with same reason shape
-py_out=$(PYTHONPATH="$ROOT/src" python3 -m host_pressure check --memory-busy 10 --sample 0.1; echo "exit:$?")
-rs_out=$("$RS_BIN" check --memory-busy 10 --sample 0.1; echo "exit:$?")
+# forced busy must exit 1 with same reason shape; isolate from host load/cpu/disk/psi
+# and lower memory_busy to 0 so low-memory CI VMs still trigger busy (not ok)
+# and high-load CI runners do not escalate to overloaded.
+tmp_busy_cfg=$(mktemp)
+cat > "$tmp_busy_cfg" <<'EOF'
+{
+  "cpu_busy": 101, "cpu_overloaded": 101,
+  "memory_busy": 0, "memory_overloaded": 101,
+  "load_busy": 10000, "load_overloaded": 10000,
+  "disk_busy": 101, "disk_overloaded": 101,
+  "swap_busy_gb": null, "swap_overloaded_gb": null,
+  "psi_cpu_busy": 101, "psi_cpu_overloaded": 101,
+  "psi_memory_busy": 101, "psi_memory_overloaded": 101,
+  "psi_io_busy": 101, "psi_io_overloaded": 101
+}
+EOF
+py_out=$(PYTHONPATH="$ROOT/src" python3 -m host_pressure check --config "$tmp_busy_cfg" --memory-busy 0 --sample 0.1; echo "exit:$?")
+rs_out=$("$RS_BIN" check --config "$tmp_busy_cfg" --memory-busy 0 --sample 0.1; echo "exit:$?")
+rm -f "$tmp_busy_cfg"
 py_reason=$(echo "$py_out" | head -n 1)
 rs_reason=$(echo "$rs_out" | head -n 1)
-if [[ "$py_reason" =~ ^busy:\ memory\ [0-9.]+%\ \>=\ 10%$ ]] && [[ "$rs_reason" =~ ^busy:\ memory\ [0-9.]+%\ \>=\ 10%$ ]]; then
+py_exit=$(echo "$py_out" | tail -n 1)
+rs_exit=$(echo "$rs_out" | tail -n 1)
+if [ "$py_exit" = "exit:1" ] && [ "$rs_exit" = "exit:1" ] \
+  && [[ "$py_reason" =~ ^busy:\ memory\ [0-9]+(\.[0-9])?%\ \>=\ 0%$ ]] \
+  && [[ "$rs_reason" =~ ^busy:\ memory\ [0-9]+(\.[0-9])?%\ \>=\ 0%$ ]]; then
   ok "check busy reason shape"
 else
-  bad "check busy reason shape" "py: $py_reason
-rs: $rs_reason"
+  bad "check busy reason shape" "py: $py_reason ($py_exit)
+rs: $rs_reason ($rs_exit)"
 fi
 
 # 5. error paths: unknown placeholder, unknown key, bad env (exit 64, same message).

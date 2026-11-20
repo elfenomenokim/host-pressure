@@ -72,5 +72,22 @@ class ThresholdInputValidation(unittest.TestCase):
         self.assertEqual(verdict({"memoryPercent": 71.0}, rules)["level"], "busy")
 
 
+class ReasonNumberFormatting(unittest.TestCase):
+    """Integral numbers drop .0 and non-integral numbers keep one decimal, matching Rust."""
+
+    def test_load_reason_shapes(self):
+        integral = verdict({"loadavg": [15.0, 15.0, 15.0], "ncpu": 5})
+        self.assertEqual(integral["level"], "overloaded")
+        self.assertEqual(integral["reasons"], ["load 15 (3.00/core) 3/core >= 2/core"])
+
+        fractional = verdict({"loadavg": [16.3, 16.3, 16.3], "ncpu": 5})
+        self.assertEqual(fractional["level"], "overloaded")
+        self.assertEqual(fractional["reasons"], ["load 16.3 (3.26/core) 3.3/core >= 2/core"])
+
+        zero_mem = verdict({"memoryPercent": -0.0}, Thresholds(memory_busy=0.0))
+        self.assertEqual(zero_mem["level"], "busy")
+        self.assertEqual(zero_mem["reasons"], ["memory 0% >= 0%"])
+
+
 if __name__ == "__main__":
     unittest.main()

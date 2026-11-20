@@ -317,9 +317,6 @@ pub fn py_num(value: f64) -> String {
     if t.is_empty() || t == "-0" {
         t = "0".to_string();
     }
-    if t == "-0" {
-        t = "0".to_string();
-    }
     t
 }
 
@@ -620,5 +617,42 @@ mod tests {
         std::fs::remove_file(&path).ok();
         assert_eq!(map.get("swap_busy_gb"), Some(&None));
         assert_eq!(map.get("memory_busy"), Some(&Some(70.0)));
+    }
+
+    #[test]
+    fn reason_number_formatting_matches_python() {
+        let mut r = psi_reading();
+        r.os = Some("darwin".to_string());
+        r.pressure = "normal".to_string();
+        r.pressure_source = "nspressuredispatch".to_string();
+        r.psi = None;
+        r.ncpu = Some(5);
+        r.loadavg = Some(vec![15.0, 15.0, 15.0]);
+        let integral = verdict_reading(&r, &Thresholds::default());
+        assert_eq!(integral.level, "overloaded");
+        assert_eq!(
+            integral.reasons,
+            vec!["load 15 (3.00/core) 3/core >= 2/core".to_string()]
+        );
+
+        r.loadavg = Some(vec![16.3, 16.3, 16.3]);
+        let fractional = verdict_reading(&r, &Thresholds::default());
+        assert_eq!(fractional.level, "overloaded");
+        assert_eq!(
+            fractional.reasons,
+            vec!["load 16.3 (3.26/core) 3.3/core >= 2/core".to_string()]
+        );
+
+        r.loadavg = None;
+        r.memory_percent = Some(-0.0);
+        let zero_mem = verdict_reading(
+            &r,
+            &Thresholds {
+                memory_busy: 0.0,
+                ..Thresholds::default()
+            },
+        );
+        assert_eq!(zero_mem.level, "busy");
+        assert_eq!(zero_mem.reasons, vec!["memory 0% >= 0%".to_string()]);
     }
 }
