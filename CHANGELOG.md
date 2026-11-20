@@ -3,6 +3,18 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses `MAJOR.MINOR.PATCH`.
 
+## [0.1.6] - 2026-11-20
+
+### Fixed
+
+- The Python edition printed `-0` for a negative zero in a reason; it now prints `0`
+  like the Rust edition.
+
+### Changed
+
+- Tests run on Ubuntu, macOS and Windows in CI; the Python/Rust parity check no longer
+  depends on the host's load and memory.
+
 ## [0.1.5] - 2026-11-19
 
 ### Added
